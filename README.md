@@ -1,20 +1,21 @@
 # claude-queue
 
-> Fire Claude Code prompts from your phone. Pick up the results in the morning.
+> Fire Claude Code prompts from your phone
+
+![Python](https://img.shields.io/badge/python-3.11-blue) ![License](https://img.shields.io/badge/license-MIT-green) ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)
+
+---
+
+**[Why I built this](#chronically-online-workflow) · [What it does](#what-it-does) · [Quick setup](#quick-setup) · [Writing prompts](#writing-prompts) · [Commands](#telegram-commands) · [Workflow](#workflow) · [Security](#security)**
 
 ---
 
 ## Chronically Online Workflow
 
 Have you ever asked yourself, how I could possibly make my Claude agents work harder? 
-Why am I wasting time sleeping when I could be building my new AI-native, agentic, autonomous, multi-agent, vertically-integrated, cloud-native, enterprise-grade, API-first, workflow-orchestration, hyperautomated, category-defining, venture-scalable, product-led-growth, digitally-transformative B2B SaaS EMPIRE?
+Why am I wasting time sleeping when I could be building my new ***AI-native, agentic, autonomous, multi-agent, vertically-integrated, cloud-native, enterprise-grade, API-first, workflow-orchestration, hyperautomated, category-defining, venture-scalable, product-led-growth, digitally-transformative B2B SaaS*** EMPIRE?
 
 If meeting your wife's boyfriend has taught you anything about B2B sales then this is for you.
-
-So recently I signed up to Claude Code after putting it off for ages. 
-I was living off those glorious days of $10 Copilot pro subscriptions, but that was obliterated when they went from request based billing to token based billing. 
-
-I finally bit the bullet and I was intoduced to this 5 Hour window concept. 
 
 Every night I'd go to sleep with 4–5 hours left in my usage window and Claude would just sit there. Doing NOTHING. Slacking off. There are no free rides around here. 
 
@@ -24,8 +25,8 @@ A TELEGRAM BOT SO I CAN FIRE OFF PROMPTS FROM MY PHONE.
 Now I can be outside touching grass while I fire claude prompts.
 
 Literally me:
-<img width="500" height="501" alt="atkvc7" src="https://github.com/user-attachments/assets/97417399-43b5-48e2-86e5-5c7c5870fab1" />
 
+<img width="500" height="501" alt="atkvc7" src="https://github.com/user-attachments/assets/97417399-43b5-48e2-86e5-5c7c5870fab1" />
 
 ---
 
@@ -150,6 +151,13 @@ Your prompt here. Use {{Feature}} and {{ResourceName}} as placeholders.
 ### Getting prompts onto the bot
 
 Prompts are `.md` files with YAML frontmatter. Once saved, you fire them by name. There are a few ways to get them in:
+
+| Method | Best for |
+|---|---|
+| 🖥️ **Drag into Telegram desktop** (Mac/Windows) | Detailed prompts written with your codebase open — recommended |
+| 📱 **Share sheet** (iOS/Android) | Uploading from your phone via Files/Documents |
+| ⌨️ **`/save` in chat** | Short prompts on the go — bot asks for content next message |
+| ⚡ **`/run`** | One-offs that don't need saving |
 
 **Drag into Telegram desktop (recommended for detailed prompts)**
 Write your `.md` file in your editor with the codebase open, then drag it directly into the Telegram chat with your bot on Mac or Windows. The bot saves it automatically — no commands needed.
