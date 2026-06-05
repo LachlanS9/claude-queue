@@ -215,6 +215,35 @@ Open Telegram, find your bot, send `/help`. You should get the command reference
 
 ---
 
+## 13. Upload your first prompt
+
+Prompts are `.md` files with YAML frontmatter (see `example-prompt.md` in the repo). Once the bot is running, get your first prompt in using whichever method suits you:
+
+**Drag into Telegram desktop (Mac/Windows)**
+Write a `.md` file in your editor, then drag it directly into the chat with your bot in the Telegram desktop app. The bot detects the file, saves it, and confirms with the prompt name.
+
+**Share sheet (iOS/Android)**
+Locate the `.md` file in Files or Documents, tap Share, and send it to your bot's Telegram chat.
+
+**Type directly in chat**
+```
+/save my-first-prompt
+```
+The bot replies asking for the content — paste or type it, then send. Best for short prompts.
+
+**Fire a one-off without saving**
+No file needed:
+```
+/run Refactor the authentication module to use async/await throughout
+```
+
+Once you have a saved prompt, fire it with:
+```
+/fire my-first-prompt
+```
+
+---
+
 ## Adding a new user
 
 1. They message [@userinfobot](https://t.me/userinfobot) to get their Telegram user ID.

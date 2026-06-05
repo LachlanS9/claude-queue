@@ -147,6 +147,31 @@ Your prompt here. Use {{Feature}} and {{ResourceName}} as placeholders.
 
 ## Workflow
 
+### Getting prompts onto the bot
+
+Prompts are `.md` files with YAML frontmatter. Once saved, you fire them by name. There are a few ways to get them in:
+
+**Drag into Telegram desktop (recommended for detailed prompts)**
+Write your `.md` file in your editor with the codebase open, then drag it directly into the Telegram chat with your bot on Mac or Windows. The bot saves it automatically — no commands needed.
+
+**Share sheet on iOS/Android**
+On mobile, find the `.md` file in Files/Documents, tap Share, and share it to your Telegram bot chat.
+
+**Type it directly in Telegram**
+For short prompts on the go:
+```
+/save my-prompt-name
+```
+The bot asks for the content as your next message. Paste or type it, hit send.
+
+**One-off without saving**
+Skip saving entirely:
+```
+/run Fix the overflow on the activity list — pills wrapping below 375px
+```
+
+---
+
 ### Fire a saved prompt
 
 ```
