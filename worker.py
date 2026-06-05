@@ -13,6 +13,7 @@ from job_queue import (
     Job, dequeue, enqueue, make_job, set_running, clear_running,
     peek_all, is_cancel_requested, clear_cancel,
 )
+from pr import create_pr
 from usage import init_db, record, UsageRow
 
 
@@ -26,9 +27,6 @@ class CancelledError(Exception):
 
 class NoChangesError(Exception):
     pass
-
-
-_REPO_KEY = {"backend": "backend_repo_path", "frontend": "frontend_repo_path"}
 
 
 def run_worker(config: Config, send_telegram: Callable[[str], None], r: redis.Redis) -> None:
@@ -75,7 +73,7 @@ def run_worker(config: Config, send_telegram: Callable[[str], None], r: redis.Re
             enqueue(r, delayed)
             send_telegram(f"⚠️ {job.prompt_name} hit rate limit — requeued in 30 min")
         except NoChangesError:
-            send_telegram(f"ℹ️ {job.prompt_name} — Claude made no changes. Check the prompt or try /run with more detail.")
+            send_telegram(f"ℹ️ {job.prompt_name} — Claude made no changes. Refine the prompt or add more detail.")
         except CancelledError:
             send_telegram(f"❌ {job.prompt_name} was cancelled")
         except Exception as e:
@@ -85,7 +83,7 @@ def run_worker(config: Config, send_telegram: Callable[[str], None], r: redis.Re
             clear_cancel(r)
 
         if not peek_all(r):
-            send_telegram("All done — queue is empty. Check Azure DevOps for open PRs.")
+            send_telegram("All done — queue is empty.")
 
 
 def run_job(job: Job, config: Config, r: redis.Redis = None) -> Dict:
@@ -93,7 +91,10 @@ def run_job(job: Job, config: Config, r: redis.Redis = None) -> Dict:
     if not system_user:
         raise RuntimeError(f"No system account mapped for submitted_by={job.submitted_by}. Add this user to user_accounts in bot-config.json.")
 
-    repo_path = getattr(config, _REPO_KEY[job.repo])
+    repo_path = config.repos.get(job.repo)
+    if not repo_path:
+        raise RuntimeError(f"Unknown repo '{job.repo}'. Add it to repos in bot-config.json.")
+
     worktree = f"/tmp/cq-{job.id}"
     branch = f"queue/{int(time.time())}-{_slug(job.prompt_name)}"
 
@@ -153,7 +154,7 @@ def run_job(job: Job, config: Config, r: redis.Redis = None) -> Dict:
             check=True, capture_output=True,
         )
 
-        pr_url = _create_pr(config, job, branch)
+        pr_url = create_pr(config, job, branch)
         return {"pr_url": pr_url, "input_tokens": input_tokens, "output_tokens": output_tokens}
 
     finally:
@@ -193,31 +194,6 @@ def _parse_usage(stdout: str):
         return input_tokens, output_tokens
     except (json.JSONDecodeError, AttributeError):
         return 0, 0
-
-
-def _create_pr(config: Config, job: Job, branch: str) -> str:
-    repo_name = "Retinote-Backend" if job.repo == "backend" else "Retinote-Next"
-    url = (
-        f"https://dev.azure.com/{config.azure_devops_org}/{config.azure_devops_project}"
-        f"/_apis/git/repositories/{repo_name}/pullrequests?api-version=7.1"
-    )
-    resp = requests.post(
-        url,
-        json={
-            "title": job.prompt_name.replace("-", " ").title(),
-            "description": job.prompt_content[:500],
-            "sourceRefName": f"refs/heads/{branch}",
-            "targetRefName": f"refs/heads/{job.base_branch}",
-        },
-        auth=("", config.azure_devops_pat),
-        timeout=30,
-    )
-    resp.raise_for_status()
-    pr_id = resp.json()["pullRequestId"]
-    return (
-        f"https://dev.azure.com/{config.azure_devops_org}/{config.azure_devops_project}"
-        f"/_git/{repo_name}/pullrequest/{pr_id}"
-    )
 
 
 def _slug(name: str) -> str:
