@@ -1,0 +1,8 @@
+python-telegram-bot==21.10
+redis==5.2.1
+python-frontmatter==1.1.0
+PyYAML==6.0.2
+requests==2.32.3
+fakeredis==2.26.2
+pytest==8.3.5
+pytest-asyncio==0.24.0

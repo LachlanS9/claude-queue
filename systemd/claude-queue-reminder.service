@@ -1,0 +1,17 @@
+[Unit]
+Description=Send Telegram usage reset reminder
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/root/claude-queue
+EnvironmentFile=/etc/claude-queue.env
+ExecStart=/root/claude-queue/venv/bin/python -c "\
+import asyncio, json, os; \
+from telegram import Bot; \
+token = os.environ['TELEGRAM_BOT_TOKEN']; \
+f = open(os.path.expanduser('~/bot-config.json')); \
+cfg = json.load(f); f.close(); \
+bot = Bot(token=token); \
+msg = f'Usage window resets in 30 minutes ({cfg[\"reset_time\"]} Brisbane).'; \
+[asyncio.run(bot.send_message(chat_id=uid, text=msg)) for uid in cfg['allowed_user_ids']]"

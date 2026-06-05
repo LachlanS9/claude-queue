@@ -1,0 +1,16 @@
+[Unit]
+Description=Claude Queue Worker
+After=network.target redis.service
+Requires=redis.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/claude-queue
+EnvironmentFile=/etc/claude-queue.env
+ExecStart=/root/claude-queue/venv/bin/python main_worker.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

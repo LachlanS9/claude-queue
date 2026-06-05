@@ -1,0 +1,16 @@
+[Unit]
+Description=Claude Queue Telegram Bot
+After=network.target redis.service
+Requires=redis.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/claude-queue
+EnvironmentFile=/etc/claude-queue.env
+ExecStart=/root/claude-queue/venv/bin/python main_bot.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

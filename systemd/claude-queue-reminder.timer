@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily usage reset reminder (30 min before reset)
+
+[Timer]
+# Fires at 08:30 Brisbane = 22:30 UTC (Brisbane is UTC+10, no DST)
+# Update OnCalendar if you change /resettime
+OnCalendar=*-*-* 22:30:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target
