@@ -4,15 +4,28 @@
 
 ---
 
-## Why I built this
+## Chronically Online Workflow
 
-I kept wasting my Claude subscription.
+Have you ever asked yourself, how I could possibly make my Claude agents work harder? 
+Why am I wasting time sleeping when I could be building my new AI-native, agentic, autonomous, multi-agent, vertically-integrated, cloud-native, enterprise-grade, API-first, workflow-orchestration, hyperautomated, category-defining, venture-scalable, product-led-growth, digitally-transformative B2B SaaS EMPIRE?
 
-Every night I'd go to sleep with 4–5 hours left in my usage window and Claude would just sit there. During the day I'd think of things I wanted it to work on — refactors, bug fixes, features — but I was away from my desk. Commuting, in meetings, out running. By the time I got back, the window had reset and I'd missed it.
+If meeting your wife's boyfriend has taught you anything about B2B sales then this is for you.
 
-I also wanted to be able to queue work from anywhere. Not just from my desk with VS Code open — from my phone, from a café, from wherever an idea hit me. I wanted to send Claude a task, go to sleep, and wake up to pull requests.
+So recently I signed up to Claude Code after putting it off for ages. 
+I was living off those glorious days of $10 Copilot pro subscriptions, but that was obliterated when they went from request based billing to token based billing. 
 
-So I built claude-queue.
+I finally bit the bullet and I was intoduced to this 5 Hour window concept. 
+
+Every night I'd go to sleep with 4–5 hours left in my usage window and Claude would just sit there. Doing NOTHING. Slacking off. There are no free rides around here. 
+
+So I built claude-queue. 
+A TELEGRAM BOT SO I CAN FIRE OFF PROMPTS FROM MY PHONE. 
+
+Now I can be outside touching grass while I fire claude prompts.
+
+Literally me:
+<img width="500" height="501" alt="atkvc7" src="https://github.com/user-attachments/assets/97417399-43b5-48e2-86e5-5c7c5870fab1" />
+
 
 ---
 
@@ -50,6 +63,8 @@ Three systemd services run permanently on the VM: `claude-queue-bot`, `claude-qu
 ## Recommended host
 
 [DigitalOcean](https://m.do.co/c/bd7257bb96fd) is what I use. A $6/month Basic Droplet (1 vCPU, 1 GB RAM, Ubuntu 22.04) is more than enough to run the bot, worker, and Redis.
+
+[![DigitalOcean Referral Badge](https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%201.svg)](https://www.digitalocean.com/?refcode=bd7257bb96fd&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
 
 **[Get $200 in credit for 60 days](https://m.do.co/c/bd7257bb96fd)** — enough to run this for months at no cost.
 
@@ -188,4 +203,4 @@ Issues and PRs welcome. If you add a new PR provider (GitLab, Bitbucket), follow
 
 ## Licence
 
-MIT
+MIT - idk claude did this for me 
