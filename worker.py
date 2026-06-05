@@ -6,7 +6,6 @@ import subprocess
 import time
 from typing import Callable, Dict
 import redis
-import requests
 
 from config import Config
 from job_queue import (
