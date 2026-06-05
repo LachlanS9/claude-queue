@@ -41,7 +41,7 @@ def test_parse_run_args_defaults():
     model, thinking, repo, branch, text = parse_run_args(["fix", "the", "overflow"])
     assert model == "claude-sonnet-4-6"
     assert thinking == "none"
-    assert repo == "backend"
+    assert repo is None
     assert branch == "main"
     assert text == "fix the overflow"
 
@@ -129,10 +129,10 @@ def test_save_prompt_content_uses_frontend_dir(tmp_path):
     assert "frontend" in path
 
 
-def test_save_prompt_content_defaults_to_backend(tmp_path):
+def test_save_prompt_content_defaults_to_default_repo(tmp_path):
     content = "Just a plain prompt with no frontmatter."
     path = save_prompt_content("plain", content, str(tmp_path))
-    assert "backend" in path
+    assert "default" in path
 
 
 def test_delete_prompt_file(tmp_path):

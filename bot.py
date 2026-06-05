@@ -64,7 +64,7 @@ def parse_fire_args(args: List[str]) -> Tuple[List[str], Dict[str, str]]:
 def parse_run_args(args: List[str]) -> Tuple[str, str, str, str, str]:
     model = MODEL_MAP["sonnet"]
     thinking = "none"
-    repo = "backend"
+    repo = None
     branch = "main"
     remaining = []
     i = 0
@@ -125,12 +125,12 @@ def format_status(r: redis_lib.Redis) -> str:
     return "\n".join(lines)
 
 
-def save_prompt_content(name: str, content: str, backend_path: str) -> str:
+def save_prompt_content(name: str, content: str, backend_path: str, default_repo: str = "default") -> str:
     try:
         post = fm.loads(content)
-        repo = str(post.get("repo", "backend"))
+        repo = str(post.get("repo", default_repo))
     except Exception:
-        repo = "backend"
+        repo = default_repo
     dest_dir = os.path.join(backend_path, PROMPTS_SUBDIR, repo)
     os.makedirs(dest_dir, exist_ok=True)
     dest = os.path.join(dest_dir, f"{name}.md")
@@ -150,7 +150,8 @@ def delete_prompt(name: str, backend_path: str) -> bool:
 
 
 def make_command_handlers(config: Config, r: redis_lib.Redis):
-    backend_path = config.backend_repo_path
+    backend_path = config.prompts_path
+    default_repo = config.default_repo
 
     def _guard(user_id: int) -> bool:
         return is_allowed(user_id, config.user_accounts)
@@ -205,6 +206,8 @@ def make_command_handlers(config: Config, r: redis_lib.Redis):
             )
             return
         model, thinking, repo, branch, text = parse_run_args(list(context.args))
+        if repo is None:
+            repo = config.default_repo
         if not text:
             await update.message.reply_text("No prompt text provided after flags.")
             return
@@ -268,7 +271,7 @@ def make_command_handlers(config: Config, r: redis_lib.Redis):
         r.set(key, name, ex=300)
         await update.message.reply_text(
             f"Ready to save '{name}'. Send the prompt content now (include frontmatter if needed).\n"
-            f"Defaults: repo=backend, model=sonnet, thinking=none, base-branch=main"
+            f"Defaults: repo=default, model=sonnet, thinking=none, base-branch=main"
         )
 
     async def cmd_delete(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -354,9 +357,9 @@ def make_command_handlers(config: Config, r: redis_lib.Redis):
         tg_file = await context.bot.get_file(doc.file_id)
         content_bytes = await tg_file.download_as_bytearray()
         content = content_bytes.decode("utf-8")
-        path = save_prompt_content(name, content, backend_path)
-        repo = "backend" if "backend" in path else "frontend"
-        await update.message.reply_text(f"✓ Saved '{name}' ({repo}). Ready to /fire.")
+        path = save_prompt_content(name, content, backend_path, default_repo)
+        saved_repo = os.path.basename(os.path.dirname(path))
+        await update.message.reply_text(f"✓ Saved '{name}' ({saved_repo}). Ready to /fire.")
 
     async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         if not _guard(update.effective_user.id): return
@@ -367,9 +370,9 @@ def make_command_handlers(config: Config, r: redis_lib.Redis):
             return
         r.delete(key)
         content = update.message.text
-        path = save_prompt_content(pending_name, content, backend_path)
-        repo = "backend" if "backend" in path else "frontend"
-        await update.message.reply_text(f"✓ Saved '{pending_name}' ({repo}). Ready to /fire.")
+        path = save_prompt_content(pending_name, content, backend_path, default_repo)
+        saved_repo = os.path.basename(os.path.dirname(path))
+        await update.message.reply_text(f"✓ Saved '{pending_name}' ({saved_repo}). Ready to /fire.")
 
     return {
         "commands": {

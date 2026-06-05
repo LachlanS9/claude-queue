@@ -68,7 +68,7 @@ def _load(name: str, path: str) -> Prompt:
     model_alias = str(post.get("model", "sonnet"))
     return Prompt(
         name=name,
-        repo=str(post.get("repo", "backend")),
+        repo=str(post.get("repo", "default")),
         model=MODEL_MAP.get(model_alias, MODEL_MAP["sonnet"]),
         thinking=str(post.get("thinking", "none")),
         base_branch=str(post.get("base-branch", "main")),
