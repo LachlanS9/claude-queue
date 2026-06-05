@@ -30,8 +30,8 @@ class Prompt:
     content: str
 
 
-def list_prompts(backend_repo_path: str) -> List[Prompt]:
-    root = os.path.join(backend_repo_path, PROMPTS_SUBDIR)
+def list_prompts(repo_path: str) -> List[Prompt]:
+    root = os.path.join(repo_path, PROMPTS_SUBDIR)
     prompts = []
     if not os.path.isdir(root):
         return prompts
@@ -43,8 +43,8 @@ def list_prompts(backend_repo_path: str) -> List[Prompt]:
     return sorted(prompts, key=lambda p: p.name)
 
 
-def get_prompt(name: str, backend_repo_path: str) -> Optional[Prompt]:
-    root = os.path.join(backend_repo_path, PROMPTS_SUBDIR)
+def get_prompt(name: str, repo_path: str) -> Optional[Prompt]:
+    root = os.path.join(repo_path, PROMPTS_SUBDIR)
     if not os.path.isdir(root):
         return None
     for dirpath, _, files in os.walk(root):
