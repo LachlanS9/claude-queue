@@ -130,7 +130,7 @@ Your prompt here. Use {{Feature}} and {{ResourceName}} as placeholders.
 | Command | Description |
 |---|---|
 | `/help` | Full command reference |
-| `/list` | All saved prompts — name, repo, model, first line |
+| `/list` | All saved prompts — name and repo |
 | `/view <name>` | Full prompt including variable descriptions |
 | `/fire <name> [name2…] [Key=Value…]` | Queue one or more prompts |
 | `/run [--model haiku\|sonnet\|opus] [--thinking none\|low\|medium\|high] [--repo <name>] [--branch <name>] <text>` | Queue a one-off inline prompt |
@@ -150,7 +150,7 @@ Your prompt here. Use {{Feature}} and {{ResourceName}} as placeholders.
 
 ### Getting prompts onto the bot
 
-Prompts are `.md` files with YAML frontmatter. Once saved, you fire them by name. There are a few ways to get them in:
+Prompts are `.md` files with YAML frontmatter. They are **automatically deleted after `/fire`** — treat them as one-time tasks and write a new one each time. There are a few ways to get them in:
 
 | Method | Best for |
 |---|---|
@@ -170,7 +170,17 @@ For short prompts on the go:
 ```
 /save my-prompt-name
 ```
-The bot asks for the content as your next message. Paste or type it, hit send.
+The bot asks for the content as your next message. Send it with proper YAML frontmatter:
+```
+---
+repo: api
+model: sonnet
+thinking: none
+base-branch: main
+---
+Your prompt text here.
+```
+The `---` delimiters are required — without them the bot treats the whole message as the prompt body and applies defaults.
 
 **One-off without saving**
 Skip saving entirely:

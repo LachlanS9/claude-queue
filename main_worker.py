@@ -11,8 +11,10 @@ def main():
     bot = Bot(token=config.telegram_token)
 
     def send_telegram(msg: str) -> None:
-        for user_id in config.user_accounts.keys():
-            asyncio.run(bot.send_message(chat_id=user_id, text=msg))
+        async def _send_all():
+            for user_id in config.user_accounts.keys():
+                await bot.send_message(chat_id=user_id, text=msg)
+        asyncio.run(_send_all())
 
     run_worker(config, send_telegram, r)
 

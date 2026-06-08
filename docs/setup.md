@@ -37,6 +37,12 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+Set the git upstream so `git pull` works without arguments:
+
+```bash
+git branch --set-upstream-to=origin/main main
+```
+
 ---
 
 ## 3. Clone your code repositories
@@ -61,6 +67,8 @@ Each person gets their own system user. The worker runs Claude under that user's
 sudo useradd -m -s /bin/bash cq-alice
 sudo useradd -m -s /bin/bash cq-bob
 ```
+
+**The names you use here must exactly match the values in `bot-config.json` in Step 10.** A mismatch will cause jobs to fail with `getpwnam(): name not found`.
 
 ---
 
@@ -109,18 +117,19 @@ Each user messages [@userinfobot](https://t.me/userinfobot) on Telegram to get t
 4. Note `GITHUB_REPO` as `owner/repo` (e.g. `myorg/my-api`). If you have multiple repos, the worker derives the repo name from the last path segment of the repo path in your config — it must match the actual GitHub repo name.
 
 **Azure DevOps:**
-1. Go to `https://dev.azure.com/YOUR_ORG` → avatar → Personal access tokens.
-2. Create a token: Name `claude-queue`, Scopes: **Code → Read & Write**.
-3. Note the token — it becomes `AZURE_DEVOPS_PAT`.
+1. Sign in as a **service account** (e.g. `admin@yourorg.com`) rather than a personal account — otherwise all PRs will appear as created by that individual.
+2. Go to `https://dev.azure.com/YOUR_ORG` → avatar → Personal access tokens.
+3. Create a token: Name `claude-queue`, Scopes: **Code → Read & Write**.
+4. Note the token — it becomes `AZURE_DEVOPS_PAT`.
 
 ---
 
 ## 9. Configure environment variables
 
-Create `/etc/systemd/system/claude-queue.env`:
+Create `/etc/claude-queue.env` (readable only by root):
 
 ```bash
-sudo tee /etc/systemd/system/claude-queue.env > /dev/null <<'EOF'
+sudo tee /etc/claude-queue.env > /dev/null <<'EOF'
 TELEGRAM_BOT_TOKEN=123456:your-token-here
 
 # GitHub (if using GitHub PRs)
@@ -132,7 +141,7 @@ GITHUB_REPO=owner/repo-name
 # AZURE_DEVOPS_PROJECT=your-project
 # AZURE_DEVOPS_PAT=your-pat
 EOF
-sudo chmod 600 /etc/systemd/system/claude-queue.env
+sudo chmod 600 /etc/claude-queue.env
 ```
 
 ---
@@ -184,7 +193,7 @@ After=network.target redis.service
 Type=simple
 User=root
 WorkingDirectory=/root/claude-queue
-EnvironmentFile=/etc/systemd/system/claude-queue.env
+EnvironmentFile=/etc/claude-queue.env
 ExecStart=/root/claude-queue/venv/bin/python main_bot.py
 Restart=always
 RestartSec=5
@@ -193,7 +202,7 @@ RestartSec=5
 WantedBy=multi-user.target
 ```
 
-Apply the same `EnvironmentFile` line to `claude-queue-worker.service` and `claude-queue-reminder.service`.
+Apply the same `EnvironmentFile=/etc/claude-queue.env` line to `claude-queue-worker.service` and `claude-queue-reminder.service`.
 
 Enable and start:
 

@@ -92,10 +92,7 @@ def format_prompt_list(prompts) -> str:
         return "No prompts found. Send a .md file to the bot or use /save <name>."
     lines = []
     for p in prompts:
-        alias = _ALIAS.get(p.model, p.model)
-        first_line = p.content.split("\n")[0][:60]
-        var_hint = f" [{','.join(p.vars.keys())}]" if p.vars else ""
-        lines.append(f"• {p.name}{var_hint} ({p.repo}, {alias}) — {first_line}")
+        lines.append(f"• {p.name} ({p.repo})")
     return "\n".join(lines)
 
 
@@ -193,6 +190,7 @@ def make_command_handlers(config: Config, r: redis_lib.Redis):
             content, _ = resolve(p, kv)
             enqueue(r, make_job(p.name, content, p.repo, p.model, p.thinking, p.base_branch,
                                 submitted_by=update.effective_user.id))
+            delete_prompt(name, backend_path)
             queued.append(name)
         if queued:
             await update.message.reply_text(f"Queued: {', '.join(queued)}")
